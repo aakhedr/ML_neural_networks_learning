@@ -22,8 +22,7 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
                  num_labels, (hidden_layer_size + 1));
 % Setup some useful variables
 m = size(X, 1);      
-% You need to return the following variables correctly 
-J = 0;
+% % You need to return the following variables correctly 
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
 % ====================== YOUR CODE HERE ======================
@@ -57,7 +56,16 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
+y_matrix = bsxfun(@eq,y,1:num_labels);
+a1 = [ones(m,1) X];
+a2 = sigmoid(a1 * Theta1');
 
+a2 = [ones(m,1) a2];
+a3 = sigmoid(a2 * Theta2');
+J = 1/m * sum(sum((-y_matrix) .* log(a3) - (1 - y_matrix) .* log(1 - a3)));
+% grad_0 = 1/m * (X(:,1)' * (H - y));
+% grad_rest = 1/m * (X(:,2:end)' * (H - y));
+% Theta1_grad = [grad_0; grad_rest];
 % -------------------------------------------------------------
 % =========================================================================
 % Unroll gradients
