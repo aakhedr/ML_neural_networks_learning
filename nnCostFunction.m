@@ -56,13 +56,16 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
-y_matrix = bsxfun(@eq,y,1:num_labels);
-a1 = [ones(m,1) X];
-a2 = sigmoid(a1 * Theta1');
+y_matrix = bsxfun(@eq,y,1:num_labels);  % logical y matrix
+a1 = [ones(m,1) X];                     % input layer
+a2 = sigmoid(a1 * Theta1');             % hidden layer
 
-a2 = [ones(m,1) a2];
-a3 = sigmoid(a2 * Theta2');
-J = 1/m * sum(sum((-y_matrix) .* log(a3) - (1 - y_matrix) .* log(1 - a3)));
+a2 = [ones(m,1) a2];                    % hidden layer with bias unit added
+a3 = sigmoid(a2 * Theta2');             % output layer
+reg = sum(sum(sum(Theta1(:,2:end).^2)) + sum(sum(Theta2(:,2:end).^2)));
+                                        % regularization term
+J = 1/m * sum(sum((-y_matrix) .* log(a3) - (1 - y_matrix) .* log(1 - a3))) + ...
+    lambda/ (2 * m) * reg;
 % grad_0 = 1/m * (X(:,1)' * (H - y));
 % grad_rest = 1/m * (X(:,2:end)' * (H - y));
 % Theta1_grad = [grad_0; grad_rest];
