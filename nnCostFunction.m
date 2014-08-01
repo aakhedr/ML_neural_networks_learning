@@ -55,19 +55,26 @@ Theta2_grad = zeros(size(Theta2));
 %               backpropagation. That is, you can compute the gradients for
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
-%
+%% Forwardpropagation %%
 y_matrix = bsxfun(@eq,y,1:num_labels);  % logical y matrix
-a1 = [ones(m,1) X];                     % input layer with bias unit added
-a2 = sigmoid(a1 * Theta1');             % hidden layer
+a1 = [ones(m,1) X]; z2 = a1 * Theta1';
+a2 = sigmoid(z2);
 
-a2 = [ones(m,1) a2];                    % hidden layer with bias unit added
-a3 = sigmoid(a2 * Theta2');             % output layer
-
+a2 = [ones(m,1) a2]; z3 = a2 * Theta2';
+a3 = sigmoid(z3);
+%% Cost function %%
 reg = lambda/ (2 * m) * (sum(sum(sum(Theta1(:,2:end).^2)) + ...
-    sum(sum(Theta2(:,2:end).^2))));     % regularization term
+    sum(sum(Theta2(:,2:end).^2))));         % regularization term
+
 J = 1/m * sum(sum((-y_matrix) .* log(a3) - ...
     (1 - y_matrix) .* log(1 - a3))) + reg;  % cost J with regularization
 
+%% Backprogpagation %%
+delta3 = a3 - y_matrix;
+delta2 = (delta3 * Theta2(:,2:end)) .* sigmoidGradient(z2);
+DELTA2 = delta3' * a2; DELTA1 = delta2' * a1;
+
+Theta1_grad = 1/m * DELTA1; Theta2_grad = 1/m * DELTA2;
 % -------------------------------------------------------------
 % =========================================================================
 % Unroll gradients
