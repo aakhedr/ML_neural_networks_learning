@@ -21,10 +21,7 @@ Theta1 = reshape(nn_params(1:hidden_layer_size * (input_layer_size + 1)), ...
 Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):end), ...
                  num_labels, (hidden_layer_size + 1));
 % Setup some useful variables
-m = size(X, 1);      
-% % You need to return the following variables correctly 
-Theta1_grad = zeros(size(Theta1));
-Theta2_grad = zeros(size(Theta2));
+m = size(X, 1);
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
 %               following parts.
@@ -74,7 +71,10 @@ delta3 = a3 - y_matrix;
 delta2 = (delta3 * Theta2(:,2:end)) .* sigmoidGradient(z2);
 DELTA2 = delta3' * a2; DELTA1 = delta2' * a1;
 
-Theta1_grad = 1/m * DELTA1; Theta2_grad = 1/m * DELTA2;
+%% Gradient regularization %%
+reg1 = lambda/m * Theta1; reg2 = lambda/m * Theta2;
+reg1(:,1) = 0; reg2(:,1) = 0;
+Theta1_grad = 1/m * DELTA1 + reg1; Theta2_grad = 1/m * DELTA2 + reg2;
 % -------------------------------------------------------------
 % =========================================================================
 % Unroll gradients
